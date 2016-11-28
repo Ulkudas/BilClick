@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_bilclickclient" default="compile.module.bilclickclient">
+  <dirname property="module.bilclickclient.basedir" file="${ant.file.module_bilclickclient}"/>
+  
+  <property name="module.jdk.home.bilclickclient" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.bilclickclient" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.bilclickclient" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.bilclickclient" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="bilclickclient.output.dir" value="${module.bilclickclient.basedir}/out/production/BilClickClient"/>
+  <property name="bilclickclient.testoutput.dir" value="${module.bilclickclient.basedir}/out/test/BilClickClient"/>
+  
+  <path id="bilclickclient.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="bilclickclient.module.production.classpath">
+    <path refid="${module.jdk.classpath.bilclickclient}"/>
+  </path>
+  
+  <path id="bilclickclient.runtime.production.module.classpath">
+    <pathelement location="${bilclickclient.output.dir}"/>
+  </path>
+  
+  <path id="bilclickclient.module.classpath">
+    <path refid="${module.jdk.classpath.bilclickclient}"/>
+    <pathelement location="${bilclickclient.output.dir}"/>
+  </path>
+  
+  <path id="bilclickclient.runtime.module.classpath">
+    <pathelement location="${bilclickclient.testoutput.dir}"/>
+    <pathelement location="${bilclickclient.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.bilclickclient">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.bilclickclient">
+    <patternset refid="excluded.from.module.bilclickclient"/>
+  </patternset>
+  
+  <path id="bilclickclient.module.sourcepath">
+    <dirset dir="${module.bilclickclient.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.bilclickclient" depends="compile.module.bilclickclient.production,compile.module.bilclickclient.tests" description="Compile module BilClickClient"/>
+  
+  <target name="compile.module.bilclickclient.production" depends="register.custom.compilers" description="Compile module BilClickClient; production classes">
+    <mkdir dir="${bilclickclient.output.dir}"/>
+    <javac2 destdir="${bilclickclient.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.bilclickclient}/javac">
+      <compilerarg line="${compiler.args.bilclickclient}"/>
+      <bootclasspath refid="bilclickclient.module.bootclasspath"/>
+      <classpath refid="bilclickclient.module.production.classpath"/>
+      <src refid="bilclickclient.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.bilclickclient"/>
+    </javac2>
+    
+    <copy todir="${bilclickclient.output.dir}">
+      <fileset dir="${module.bilclickclient.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.bilclickclient.tests" depends="register.custom.compilers,compile.module.bilclickclient.production" description="compile module BilClickClient; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.bilclickclient" description="cleanup module">
+    <delete dir="${bilclickclient.output.dir}"/>
+    <delete dir="${bilclickclient.testoutput.dir}"/>
+  </target>
+</project>
